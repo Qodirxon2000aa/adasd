@@ -102,24 +102,103 @@ body {
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
 }
 
-.selected-uni-info h3 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #1e293b;
-  margin-bottom: 1.25rem;
-  text-align: center;
+.search-container {
+  margin-bottom: 1rem;
 }
 
-.selected-uni-info .info-list p {
+.search-field {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
   font-size: 0.95rem;
-  color: #374151;
-  margin-bottom: 0.75rem;
-  line-height: 1.5;
+  transition: border-color 0.3s ease;
 }
 
-.selected-uni-info .info-list span {
+.search-field:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.collapsible-container {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.collapsible-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: #f3f4f6;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.collapsible-header:hover {
+  background: #e5e7eb;
+}
+
+.collapsible-title {
+  font-size: 1rem;
   font-weight: 600;
-  color: #4f46e5;
+  color: #1e293b;
+}
+
+.language-toggle {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.lang-btn {
+  background: #e5e7eb;
+  border: none;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  color: #1e293b;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.lang-btn:hover {
+  background: #d1d5db;
+}
+
+.collapsible-content {
+  padding: 1rem;
+  background: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.info-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.info-value {
+  font-size: 0.95rem;
+  color: #1e293b;
+  text-align: right;
 }
 
 @media (max-width: 480px) {
@@ -153,11 +232,20 @@ body {
     border-radius: 0.5rem;
   }
 
-  .selected-uni-info h3 {
-    font-size: 1.1rem;
+  .collapsible-header {
+    padding: 0.5rem 0.75rem;
   }
 
-  .selected-uni-info .info-list p {
+  .collapsible-title {
+    font-size: 0.9rem;
+  }
+
+  .lang-btn {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .info-label, .info-value {
     font-size: 0.9rem;
   }
 }

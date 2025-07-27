@@ -47,32 +47,36 @@
     </select>
 
     <label class="input-label" for="educationType">Ta’lim turi</label>
-    <select id="educationType" class="select-field" required disabled>
-      <option value="">Tanlang</option>
-    </select>
-
-    <label class="input-label" for="studyDirection">Yo‘nalish</label>
-    <select id="studyDirection" class="select-field" required disabled>
+    <select id="educationType" class="select-field" required>
       <option value="">Tanlang</option>
     </select>
 
     <label class="input-label" for="year">O‘quv yili</label>
-    <input id="year" class="input-field" type="text" value="2024/2025" readonly />
+    <select id="year" class="select-field" required>
+      <option value="2024/2025">2024/2025</option>
+    </select>
 
     <button class="submit-btn" type="submit">Yuborish</button>
   </form>
 
   <div id="error" class="error"></div>
-  <div id="result" class="selected-uni-info" style="display: none;"></div>
+  <div id="result" class="selected-uni-info" style="display: none;">
+    <div class="search-container">
+      <input type="text" id="searchInput" class="search-field" placeholder="Yo‘nalishni qidirish...">
+    </div>
+    <div id="directionsContainer"></div>
+  </div>
 
   <script>
     const universitySelect = document.getElementById('university');
     const educationTypeSelect = document.getElementById('educationType');
-    const studyDirectionSelect = document.getElementById('studyDirection');
+    const yearSelect = document.getElementById('year');
     const form = document.getElementById('loginForm');
     const errorDiv = document.getElementById('error');
     const resultDiv = document.getElementById('result');
     const loader = document.getElementById('loader');
+    const searchInput = document.getElementById('searchInput');
+    const directionsContainer = document.getElementById('directionsContainer');
 
     let universitiesData = [];
 
@@ -87,37 +91,19 @@
           option.textContent = uni;
           universitySelect.appendChild(option);
         });
+
+        const educationTypes = [...new Set(data.map(item => item.shakl))].sort();
+        educationTypes.forEach(type => {
+          const option = document.createElement('option');
+          option.value = type;
+          option.textContent = type;
+          educationTypeSelect.appendChild(option);
+        });
       })
       .catch(err => {
         errorDiv.textContent = "Maʼlumotlarni yuklashda xatolik yuz berdi";
         console.error(err);
       });
-
-    universitySelect.addEventListener('change', () => {
-      const selectedUni = universitySelect.value;
-      const filtered = universitiesData.filter(item => item.universitet === selectedUni);
-
-      const types = [...new Set(filtered.map(item => item.shakl))].sort();
-      educationTypeSelect.innerHTML = '<option value="">Tanlang</option>';
-      types.forEach(t => {
-        const option = document.createElement('option');
-        option.value = t;
-        option.textContent = t;
-        educationTypeSelect.appendChild(option);
-      });
-
-      const directions = [...new Set(filtered.map(item => item.nomi))].sort();
-      studyDirectionSelect.innerHTML = '<option value="">Tanlang</option>';
-      directions.forEach(d => {
-        const option = document.createElement('option');
-        option.value = d;
-        option.textContent = d;
-        studyDirectionSelect.appendChild(option);
-      });
-
-      educationTypeSelect.disabled = false;
-      studyDirectionSelect.disabled = false;
-    });
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -128,38 +114,129 @@
 
       const university = universitySelect.value;
       const educationType = educationTypeSelect.value;
-      const studyDirection = studyDirectionSelect.value;
-
-      const selected = universitiesData.find(item =>
-        item.universitet === university &&
-        item.shakl.toLowerCase() === educationType.toLowerCase() &&
-        item.nomi === studyDirection
-      );
+      const year = yearSelect.value;
 
       loader.style.display = 'none';
 
-      if (selected) {
+      if (university && educationType && year) {
         resultDiv.style.display = 'block';
-        resultDiv.innerHTML = `
-          <h3>Tanlangan Universitet Ma'lumotlari</h3>
-          <div class="info-list">
-            <p><span>Universitet:</span> ${selected.universitet}</p>
-            <p><span>Viloyat:</span> ${selected.viloyat}</p>
-            <p><span>Yo‘nalish:</span> ${selected.nomi}</p>
-            <p><span>1-fan:</span> ${selected['1-fan']}</p>
-            <p><span>2-fan:</span> ${selected['2-fan']}</p>
-            <p><span>Shifr:</span> ${selected.shifr}</p>
-            <p><span>Ta'lim shakli:</span> ${selected.shakl}</p>
-            <p><span>Til:</span> ${selected.til}</p>
-            <p><span>Grant ball:</span> ${selected.grant_ball}</p>
-            <p><span>Kontrakt ball:</span> ${selected.contract_ball}</p>
-          </div>
-        `;
+        const filteredDirections = universitiesData.filter(item =>
+          item.universitet === university &&
+          item.shakl.toLowerCase() === educationType.toLowerCase()
+        );
+        directionsContainer.innerHTML = '';
+        filteredDirections.forEach(item => {
+          const collapsibleContainer = document.createElement('div');
+          collapsibleContainer.className = 'collapsible-container';
+          collapsibleContainer.innerHTML = `
+            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+              <span class="collapsible-title">${item.nomi}</span>
+              <span class="language-toggle">
+                <button class="lang-btn">Kunduzgi</button>
+                <button class="lang-btn">O‘zbekcha</button>
+              </span>
+            </div>
+            <div class="collapsible-content" style="display: none;">
+              <div class="info-table">
+                <div class="info-row">
+                  <span class="info-label">Kontrakt miqdori:</span>
+                  <span class="info-value">${item.contract_ball || 'Mavjud emas'}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Kontrakt soni:</span>
+                  <span class="info-value">${item.contract_count || '50'}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Fan 1:</span>
+                  <span class="info-value">${item['1-fan'] || 'Matematika'}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Fan 2:</span>
+                  <span class="info-value">${item['2-fan'] || 'Fizika'}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">O‘tgan ball:</span>
+                  <span class="info-value">${item.grant_ball || 'Kontrakt'}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Yil:</span>
+                  <span class="info-value">${year}</span>
+                </div>
+              </div>
+            </div>
+          `;
+          directionsContainer.appendChild(collapsibleContainer);
+        });
       } else {
         resultDiv.style.display = 'none';
-        errorDiv.textContent = "Mos ma'lumot topilmadi.";
+        errorDiv.textContent = "Iltimos, barcha maydonlarni to‘ldiring.";
       }
     });
+
+    // Search functionality
+    searchInput.addEventListener('input', () => {
+      const searchTerm = searchInput.value.toLowerCase();
+      const university = universitySelect.value;
+      const educationType = educationTypeSelect.value;
+      directionsContainer.innerHTML = '';
+      const filteredDirections = universitiesData.filter(item =>
+        item.universitet === university &&
+        item.shakl.toLowerCase() === educationType.toLowerCase() &&
+        item.nomi.toLowerCase().includes(searchTerm)
+      );
+      filteredDirections.forEach(item => {
+        const collapsibleContainer = document.createElement('div');
+        collapsibleContainer.className = 'collapsible-container';
+        collapsibleContainer.innerHTML = `
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <span class="collapsible-title">${item.nomi}</span>
+            <span class="language-toggle">
+              <button class="lang-btn">Kunduzgi</button>
+              <button class="lang-btn">O‘zbekcha</button>
+            </span>
+          </div>
+          <div class="collapsible-content" style="display: none;">
+            <div class="info-table">
+              <div class="info-row">
+                <span class="info-label">Kontrakt miqdori:</span>
+                <span class="info-value">${item.contract_ball || 'Mavjud emas'}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Kontrakt soni:</span>
+                <span class="info-value">${item.contract_count || '50'}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Fan 1:</span>
+                <span class="info-value">${item['1-fan'] || 'Matematika'}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Fan 2:</span>
+                <span class="info-value">${item['2-fan'] || 'Fizika'}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">O‘tgan ball:</span>
+                <span class="info-value">${item.grant_ball || 'Kontrakt'}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Yil:</span>
+                <span class="info-value">${yearSelect.value}</span>
+              </div>
+            </div>
+          </div>
+        `;
+        directionsContainer.appendChild(collapsibleContainer);
+      });
+    });
+
+    // Toggle collapsible content
+    function toggleCollapsible(element) {
+      const content = element.nextElementSibling;
+      if (content.style.display === 'none') {
+        content.style.display = 'block';
+      } else {
+        content.style.display = 'none';
+      }
+    }
   </script>
 </body>
 </html>
