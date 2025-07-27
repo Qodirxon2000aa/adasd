@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LDSLJMZKLF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-LDSLJMZKLF');
+</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Universitet Tanlash</title>
@@ -192,33 +201,46 @@
         const collapsibleContainer = document.createElement('div');
         collapsibleContainer.className = 'collapsible-container';
         collapsibleContainer.innerHTML = `
-          <div class="collapsible-header" onclick="toggleCollapsible(this)">
-            <span class="collapsible-title">${item.nomi}</span>
-            <span class="language-toggle">
-              <button class="lang-btn">Kunduzgi</button>
-              <button class="lang-btn">O‘zbekcha</button>
-            </span>
-          </div>
-          <div class="collapsible-content" style="display: none;">
-            
-              <div class="info-row">
-                <span class="info-label">Fan 1:</span>
-                <span class="info-value">${item['1-fan'] || 'Matematika'}</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">Fan 2:</span>
-                <span class="info-value">${item['2-fan'] || 'Fizika'}</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">O‘tgan ball:</span>
-                <span class="info-value">${item.grant_ball || 'Kontrakt'}</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">Yil:</span>
-                <span class="info-value">${yearSelect.value}</span>
+           <div class="collapsible-header" onclick="toggleCollapsible(this)">
+              <span class="collapsible-title">${item.nomi}</span>
+              <span class="language-toggle">
+                <button class="lang-btn">Kunduzgi</button>
+                <button class="lang-btn">O‘zbekcha</button>
+              </span>
+            </div>
+            <div class="collapsible-content" style="display: none;">
+              <div class="info-table">
+                <div class="info-row">
+                  <span class="info-label">Kontrakt ball:</span>
+                  <span class="info-value">${item.contract_ball || 'Mavjud emas'}</span>
+                </div>
+                  <div class="info-row">
+                  <span class="info-label">Grand ball:</span>
+                  <span class="info-value">${item.grant_ball || 'Kontrakt'}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Fan 1:</span>
+                  <span class="info-value">${item['1-fan'] || 'Matematika'}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Fan 2:</span>
+                  <span class="info-value">${item['2-fan'] || 'Fizika'}</span>
+                </div>
+              
+                <div class="info-row">
+                  <span class="info-label">Yil:</span>
+                  <span class="info-value">${year}</span>
+                </div>
+                
+
+                 <div class="info-row">
+                  <span class="info-label">Shifr:</span>
+                  <span class="info-value">${item.shifr}</span>
+                </div>
+
               </div>
             </div>
-          </div>
+          
         `;
         directionsContainer.appendChild(collapsibleContainer);
       });
