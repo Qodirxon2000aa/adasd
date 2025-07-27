@@ -1,13 +1,44 @@
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.5); }
+  70% { box-shadow: 0 0 0 10px rgba(79, 70, 229, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+}
+
+/* Body */
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Inter', sans-serif;
   background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
   padding: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
+  animation: fadeInUp 0.8s ease-out;
 }
 
+/* Form container */
 .form-container {
   background: #ffffff;
   padding: 2rem;
@@ -16,6 +47,7 @@ body {
   width: 100%;
   max-width: 500px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: zoomIn 0.8s ease forwards;
 }
 
 .form-container:hover {
@@ -29,6 +61,7 @@ body {
   font-size: 1.5rem;
   font-weight: 700;
   color: #1e293b;
+  animation: fadeInUp 0.8s ease;
 }
 
 .input-label {
@@ -37,6 +70,7 @@ body {
   font-weight: 600;
   color: #374151;
   font-size: 0.95rem;
+  transition: color 0.3s ease;
 }
 
 .select-field, .input-field {
@@ -46,14 +80,15 @@ body {
   border-radius: 0.5rem;
   border: 1px solid #d1d5db;
   background: #f9fafb;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
   font-size: 0.95rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .select-field:focus, .input-field:focus {
   outline: none;
   border-color: #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2);
+  transform: scale(1.02);
 }
 
 .submit-btn {
@@ -67,11 +102,12 @@ body {
   font-size: 1rem;
   font-weight: 600;
   transition: background 0.3s ease, transform 0.2s ease;
+  animation: pulse 2s infinite;
 }
 
 .submit-btn:hover {
   background: #4338ca;
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.02);
 }
 
 .submit-btn:active {
@@ -83,9 +119,10 @@ body {
   font-size: 0.9rem;
   text-align: center;
   margin-top: 1rem;
+  animation: fadeInUp 0.5s ease;
 }
 
-/* Tanlangan Universitet Ma'lumotlari konteyneri */
+/* Result */
 .selected-uni-info {
   background-color: #ffffff;
   border-radius: 0.75rem;
@@ -95,6 +132,7 @@ body {
   width: 100%;
   max-width: 500px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeInUp 1s ease;
 }
 
 .selected-uni-info:hover {
@@ -113,13 +151,14 @@ body {
   border: 1px solid #d1d5db;
   background: #f9fafb;
   font-size: 0.95rem;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, transform 0.3s ease;
 }
 
 .search-field:focus {
   outline: none;
   border-color: #4f46e5;
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  transform: scale(1.02);
 }
 
 .collapsible-container {
@@ -127,6 +166,7 @@ body {
   border-radius: 0.5rem;
   overflow: hidden;
   margin-bottom: 0.75rem;
+  animation: fadeInUp 0.6s ease;
 }
 
 .collapsible-header {
@@ -162,17 +202,18 @@ body {
   font-size: 0.875rem;
   color: #1e293b;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .lang-btn:hover {
   background: #d1d5db;
+  transform: scale(1.05);
 }
 
 .collapsible-content {
   padding: 1rem;
   background: #ffffff;
-  transition: all 0.3s ease;
+  animation: fadeInUp 0.5s ease;
 }
 
 .info-table {
