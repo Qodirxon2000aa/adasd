@@ -29,7 +29,7 @@
 /* Body */
 body {
   font-family: 'Inter', sans-serif;
-  background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+  background: #f3f4f6 ; /* Silliq va hammaga yoqadigan qora */
   padding: 2rem;
   display: flex;
   flex-direction: column;
