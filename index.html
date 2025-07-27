@@ -6,54 +6,37 @@
   <title>Universitet Tanlash</title>
   <link rel="stylesheet" href="dashboard.css">
   <style>
-    body {
-      font-family: sans-serif;
-      background: linear-gradient(to bottom right, #e0e7ff, #c7d2fe);
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
+    /* Loading Animation */
+    .loader-container {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      justify-content: center;
       align-items: center;
     }
-    .form-container {
-      background: white;
-      padding: 2rem;
-      border-radius: 1rem;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 500px;
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #4f46e5;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
     }
-    .form-container h2 {
-      text-align: center;
-      margin-bottom: 1.5rem;
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
-    .input-label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-    }
-    .select-field, .input-field {
-      width: 100%;
-      padding: 0.5rem;
-      margin-bottom: 1rem;
-      border-radius: 0.5rem;
-      border: 1px solid #ccc;
-    }
-    .submit-btn {
-      background: #6366f1;
-      color: white;
-      padding: 0.75rem;
-      border: none;
-      border-radius: 0.5rem;
-      cursor: pointer;
-      width: 100%;
-    }
-    .submit-btn:hover {
-      background: #4f46e5;
-    }
-   
   </style>
 </head>
 <body>
+  <div class="loader-container" id="loader">
+    <div class="loader"></div>
+  </div>
 
   <form class="form-container" id="loginForm">
     <h2>Universitet Tanlash Formasi</h2>
@@ -89,6 +72,7 @@
     const form = document.getElementById('loginForm');
     const errorDiv = document.getElementById('error');
     const resultDiv = document.getElementById('result');
+    const loader = document.getElementById('loader');
 
     let universitiesData = [];
 
@@ -135,8 +119,13 @@
       studyDirectionSelect.disabled = false;
     });
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      loader.style.display = 'flex';
+
+      // Simulate 1.5s delay for loading animation
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
       const university = universitySelect.value;
       const educationType = educationTypeSelect.value;
       const studyDirection = studyDirectionSelect.value;
@@ -146,6 +135,8 @@
         item.shakl.toLowerCase() === educationType.toLowerCase() &&
         item.nomi === studyDirection
       );
+
+      loader.style.display = 'none';
 
       if (selected) {
         resultDiv.style.display = 'block';
