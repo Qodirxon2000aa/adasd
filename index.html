@@ -60,6 +60,15 @@
       <option value="">Tanlang</option>
     </select>
 
+    <label class="input-label" for="language">Ta’lim tili</label>
+    <select id="language" class="select-field" required>
+      <option value="">Tanlang</option>
+      <option value="uz">O‘zbek</option>
+      <option value="kk">Qaraqalpoq</option>
+      <option value="tj">Tojik</option>
+      <option value="ru">Rus</option>
+    </select>
+
     <label class="input-label" for="year">O‘quv yili</label>
     <select id="year" class="select-field" required>
       <option value="2024/2025">2024/2025</option>
@@ -79,6 +88,7 @@
   <script>
     const universitySelect = document.getElementById('university');
     const educationTypeSelect = document.getElementById('educationType');
+    const languageSelect = document.getElementById('language');
     const yearSelect = document.getElementById('year');
     const form = document.getElementById('loginForm');
     const errorDiv = document.getElementById('error');
@@ -123,15 +133,17 @@
 
       const university = universitySelect.value;
       const educationType = educationTypeSelect.value;
+      const language = languageSelect.value;
       const year = yearSelect.value;
 
       loader.style.display = 'none';
 
-      if (university && educationType && year) {
+      if (university && educationType && language && year) {
         resultDiv.style.display = 'block';
         const filteredDirections = universitiesData.filter(item =>
           item.universitet === university &&
-          item.shakl.toLowerCase() === educationType.toLowerCase()
+          item.shakl.toLowerCase() === educationType.toLowerCase() &&
+          item.til.toLowerCase() === language.toLowerCase()
         );
         directionsContainer.innerHTML = '';
         filteredDirections.forEach(item => {
@@ -142,7 +154,12 @@
               <span class="collapsible-title">${item.nomi}</span>
               <span class="language-toggle">
                 <button class="lang-btn">Kunduzgi</button>
-                <button class="lang-btn">O‘zbekcha</button>
+                <button class="lang-btn">${
+                  item.til === 'uz' ? 'O‘zbek' :
+                  item.til === 'kk' ? 'Qaraqalpoq' :
+                  item.til === 'tj' ? 'Tojik' :
+                  item.til === 'ru' ? 'Rus' : 'Noma’lum'
+                }</button>
               </span>
             </div>
             <div class="collapsible-content" style="display: none;">
@@ -151,8 +168,8 @@
                   <span class="info-label">Kontrakt ball:</span>
                   <span class="info-value">${item.contract_ball || 'Mavjud emas'}</span>
                 </div>
-                  <div class="info-row">
-                  <span class="info-label">Grand ball:</span>
+                <div class="info-row">
+                  <span class="info-label">Grant ball:</span>
                   <span class="info-value">${item.grant_ball || 'Kontrakt'}</span>
                 </div>
                 <div class="info-row">
@@ -163,18 +180,14 @@
                   <span class="info-label">Fan 2:</span>
                   <span class="info-value">${item['2-fan'] || 'Fizika'}</span>
                 </div>
-              
                 <div class="info-row">
                   <span class="info-label">Yil:</span>
                   <span class="info-value">${year}</span>
                 </div>
-                
-
-                 <div class="info-row">
+                <div class="info-row">
                   <span class="info-label">Shifr:</span>
                   <span class="info-value">${item.shifr}</span>
                 </div>
-
               </div>
             </div>
           `;
@@ -191,56 +204,58 @@
       const searchTerm = searchInput.value.toLowerCase();
       const university = universitySelect.value;
       const educationType = educationTypeSelect.value;
+      const language = languageSelect.value;
       directionsContainer.innerHTML = '';
       const filteredDirections = universitiesData.filter(item =>
         item.universitet === university &&
         item.shakl.toLowerCase() === educationType.toLowerCase() &&
+        item.til.toLowerCase() === language.toLowerCase() &&
         item.nomi.toLowerCase().includes(searchTerm)
       );
       filteredDirections.forEach(item => {
         const collapsibleContainer = document.createElement('div');
         collapsibleContainer.className = 'collapsible-container';
         collapsibleContainer.innerHTML = `
-           <div class="collapsible-header" onclick="toggleCollapsible(this)">
-              <span class="collapsible-title">${item.nomi}</span>
-              <span class="language-toggle">
-                <button class="lang-btn">Kunduzgi</button>
-                <button class="lang-btn">O‘zbekcha</button>
-              </span>
-            </div>
-            <div class="collapsible-content" style="display: none;">
-              <div class="info-table">
-                <div class="info-row">
-                  <span class="info-label">Kontrakt ball:</span>
-                  <span class="info-value">${item.contract_ball || 'Mavjud emas'}</span>
-                </div>
-                  <div class="info-row">
-                  <span class="info-label">Grand ball:</span>
-                  <span class="info-value">${item.grant_ball || 'Kontrakt'}</span>
-                </div>
-                <div class="info-row">
-                  <span class="info-label">Fan 1:</span>
-                  <span class="info-value">${item['1-fan'] || 'Matematika'}</span>
-                </div>
-                <div class="info-row">
-                  <span class="info-label">Fan 2:</span>
-                  <span class="info-value">${item['2-fan'] || 'Fizika'}</span>
-                </div>
-              
-                <div class="info-row">
-                  <span class="info-label">Yil:</span>
-                  <span class="info-value">2024/2025</span>
-                </div>
-                
-
-                 <div class="info-row">
-                  <span class="info-label">Shifr:</span>
-                  <span class="info-value">${item.shifr}</span>
-                </div>
-
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <span class="collapsible-title">${item.nomi}</span>
+            <span class="language-toggle">
+              <button class="lang-btn">Kunduzgi</button>
+              <button class="lang-btn">${
+                item.til === 'uz' ? 'O‘zbek' :
+                item.til === 'kk' ? 'Qaraqalpoq' :
+                item.til === 'tj' ? 'Tojik' :
+                item.til === 'ru' ? 'Rus' : 'Noma’lum'
+              }</button>
+            </span>
+          </div>
+          <div class="collapsible-content" style="display: none;">
+            <div class="info-table">
+              <div class="info-row">
+                <span class="info-label">Kontrakt ball:</span>
+                <span class="info-value">${item.contract_ball || 'Mavjud emas'}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Grant ball:</span>
+                <span class="info-value">${item.grant_ball || 'Kontrakt'}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Fan 1:</span>
+                <span class="info-value">${item['1-fan'] || 'Matematika'}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Fan 2:</span>
+                <span class="info-value">${item['2-fan'] || 'Fizika'}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Yil:</span>
+                <span class="info-value">${year}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Shifr:</span>
+                <span class="info-value">${item.shifr}</span>
               </div>
             </div>
-          
+          </div>
         `;
         directionsContainer.appendChild(collapsibleContainer);
       });
