@@ -13,6 +13,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Universitet Tanlash</title>
     <link rel="stylesheet" href="dashboard.css">
+    <!-- Toastify CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
     <style>
       /* Loading Animation */
       .loader-container {
@@ -87,6 +89,8 @@
     <div id="directionsContainer"></div>
   </div>
 
+  <!-- Toastify JS -->
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script>
     const universitySelect = document.getElementById('university');
     const educationTypeSelect = document.getElementById('educationType');
@@ -123,6 +127,14 @@
       .catch(err => {
         errorDiv.textContent = "Maʼlumotlarni yuklashda xatolik yuz berdi";
         console.error(err);
+        Toastify({
+          text: "Maʼlumotlarni yuklashda xatolik yuz berdi",
+          duration: 3000,
+          gravity: "top",
+          position: "center",
+          backgroundColor: "#e74c3c",
+          stopOnFocus: true,
+        }).showToast();
       });
 
     form.addEventListener('submit', async (e) => {
@@ -147,6 +159,104 @@
           item.til.toLowerCase() === language.toLowerCase()
         );
         directionsContainer.innerHTML = '';
+        if (filteredDirections.length === 0) {
+          Toastify({
+            text: "Bu kategoriyaga tegishli yo'nalishlar topilmadi!",
+            duration: 3000,
+            gravity: "top",
+            position: "center",
+            backgroundColor: "#e74c3c",
+            stopOnFocus: true,
+          }).showToast();
+        } else {
+          filteredDirections.forEach(item => {
+            const collapsibleContainer = document.createElement('div');
+            collapsibleContainer.className = 'collapsible-container';
+            collapsibleContainer.innerHTML = `
+              <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                <span class="collapsible-title">${item.nomi}</span>
+                <span class="language-toggle">
+                  <button class="lang-btn">${educationTypeDisplayNames[item.shakl.toLowerCase()] || item.shakl}</button>
+                  <button class="lang-btn">${
+                    item.til === 'uz' ? 'O‘zbek' :
+                    item.til === 'kk' ? 'Qaraqalpoq' :
+                    item.til === 'tj' ? 'Tojik' :
+                    item.til === 'ru' ? 'Rus' : 'Noma’lum'
+                  }</button>
+                </span>
+              </div>
+              <div class="collapsible-content" style="display: none;">
+                <div class="info-table">
+                  <div class="info-row">
+                    <span class="info-label">Til:</span>
+                    <span class="info-value">${item.til || 'Mavjud emas'}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Kontrakt ball:</span>
+                    <span class="info-value">${item.contract_ball || 'Mavjud emas'}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Grant ball:</span>
+                    <span class="info-value">${item.grant_ball || 'Kontrakt'}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Fan 1:</span>
+                    <span class="info-value">${item['1-fan'] || 'Matematika'}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Fan 2:</span>
+                    <span class="info-value">${item['2-fan'] || 'Fizika'}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Yil:</span>
+                    <span class="info-value">${year}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Shifr:</span>
+                    <span class="info-value">${item.shifr}</span>
+                  </div>
+                </div>
+              </div>
+            `;
+            directionsContainer.appendChild(collapsibleContainer);
+          });
+        }
+      } else {
+        resultDiv.style.display = 'none';
+        Toastify({
+          text: "Iltimos, barcha maydonlarni to‘ldiring.",
+          duration: 3000,
+          gravity: "top",
+          position: "center",
+          backgroundColor: "#e74c3c",
+          stopOnFocus: true,
+        }).showToast();
+      }
+    });
+
+    // Search functionality
+    searchInput.addEventListener('input', () => {
+      const searchTerm = searchInput.value.toLowerCase();
+      const university = universitySelect.value;
+      const educationType = educationTypeSelect.value;
+      const language = languageSelect.value;
+      directionsContainer.innerHTML = '';
+      const filteredDirections = universitiesData.filter(item =>
+        item.universitet === university &&
+        item.shakl.toLowerCase() === educationType.toLowerCase() &&
+        item.til.toLowerCase() === language.toLowerCase() &&
+        item.nomi.toLowerCase().includes(searchTerm)
+      );
+      if (filteredDirections.length === 0) {
+        Toastify({
+          text: "Bu kategoriyaga tegishli yo'nalishlar topilmadi!",
+          duration: 3000,
+          gravity: "top",
+          position: "center",
+          backgroundColor: "#e74c3c",
+          stopOnFocus: true,
+        }).showToast();
+      } else {
         filteredDirections.forEach(item => {
           const collapsibleContainer = document.createElement('div');
           collapsibleContainer.className = 'collapsible-container';
@@ -198,76 +308,7 @@
           `;
           directionsContainer.appendChild(collapsibleContainer);
         });
-      } else {
-        resultDiv.style.display = 'none';
-        errorDiv.textContent = "Iltimos, barcha maydonlarni to‘ldiring.";
       }
-    });
-
-    // Search functionality
-    searchInput.addEventListener('input', () => {
-      const searchTerm = searchInput.value.toLowerCase();
-      const university = universitySelect.value;
-      const educationType = educationTypeSelect.value;
-      const language = languageSelect.value;
-      directionsContainer.innerHTML = '';
-      const filteredDirections = universitiesData.filter(item =>
-        item.universitet === university &&
-        item.shakl.toLowerCase() === educationType.toLowerCase() &&
-        item.til.toLowerCase() === language.toLowerCase() &&
-        item.nomi.toLowerCase().includes(searchTerm)
-      );
-      filteredDirections.forEach(item => {
-        const collapsibleContainer = document.createElement('div');
-        collapsibleContainer.className = 'collapsible-container';
-        collapsibleContainer.innerHTML = `
-          <div class="collapsible-header" onclick="toggleCollapsible(this)">
-            <span class="collapsible-title">${item.nomi}</span>
-            <span class="language-toggle">
-              <button class="lang-btn">${educationTypeDisplayNames[item.shakl.toLowerCase()] || item.shakl}</button>
-              <button class="lang-btn">${
-                item.til === 'uz' ? 'O‘zbek' :
-                item.til === 'kk' ? 'Qaraqalpoq' :
-                item.til === 'tj' ? 'Tojik' :
-                item.til === 'ru' ? 'Rus' : 'Noma’lum'
-              }</button>
-            </span>
-          </div>
-          <div class="collapsible-content" style="display: none;">
-            <div class="info-table">
-              <div class="info-row">
-                <span class="info-label">Til:</span>
-                <span class="info-value">${item.til || 'Mavjud emas'}</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">Kontrakt ball:</span>
-                <span class="info-value">${item.contract_ball || 'Mavjud emas'}</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">Grant ball:</span>
-                <span class="info-value">${item.grant_ball || 'Kontrakt'}</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">Fan 1:</span>
-                <span class="info-value">${item['1-fan'] || 'Matematika'}</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">Fan 2:</span>
-                <span class="info-value">${item['2-fan'] || 'Fizika'}</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">Yil:</span>
-                <span class="info-value">${year}</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">Shifr:</span>
-                <span class="info-value">${item.shifr}</span>
-              </div>
-            </div>
-          </div>
-        `;
-        directionsContainer.appendChild(collapsibleContainer);
-      });
     });
 
     // Toggle collapsible content
