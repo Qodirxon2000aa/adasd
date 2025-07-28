@@ -2,45 +2,44 @@
 <html lang="uz">
 <head>
     <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-LDSLJMZKLF"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-LDSLJMZKLF');
-</script>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Universitet Tanlash</title>
-  <link rel="stylesheet" href="dashboard.css">
-  <style>
-    /* Loading Animation */
-    .loader-container {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.3);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-    }
-    .loader {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #4f46e5;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  </style>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LDSLJMZKLF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-LDSLJMZKLF');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Universitet Tanlash</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <style>
+      /* Loading Animation */
+      .loader-container {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+      .loader {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #4f46e5;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
 </head>
 <body>
   <div class="loader-container" id="loader">
@@ -58,6 +57,9 @@
     <label class="input-label" for="educationType">Ta’lim turi</label>
     <select id="educationType" class="select-field" required>
       <option value="">Tanlang</option>
+      <option value="kunduzgi">Kunduzgi</option>
+      <option value="kechki">Kechgi</option>
+      <option value="masofaviy_2">Masofaviy</option>
     </select>
 
     <label class="input-label" for="language">Ta’lim tili</label>
@@ -99,6 +101,13 @@
 
     let universitiesData = [];
 
+    // Mapping for education type display names in collapsible header
+    const educationTypeDisplayNames = {
+      'kunduzgi': 'Kunduzgi',
+      'kechki': 'Kechgi',
+      'masofaviy_2': 'Masofaviy'
+    };
+
     fetch('data.json')
       .then(res => res.json())
       .then(data => {
@@ -109,14 +118,6 @@
           option.value = uni;
           option.textContent = uni;
           universitySelect.appendChild(option);
-        });
-
-        const educationTypes = [...new Set(data.map(item => item.shakl))].sort();
-        educationTypes.forEach(type => {
-          const option = document.createElement('option');
-          option.value = type;
-          option.textContent = type;
-          educationTypeSelect.appendChild(option);
         });
       })
       .catch(err => {
@@ -153,7 +154,7 @@
             <div class="collapsible-header" onclick="toggleCollapsible(this)">
               <span class="collapsible-title">${item.nomi}</span>
               <span class="language-toggle">
-                <button class="lang-btn">Kunduzgi</button>
+                <button class="lang-btn">${educationTypeDisplayNames[item.shakl.toLowerCase()] || item.shakl}</button>
                 <button class="lang-btn">${
                   item.til === 'uz' ? 'O‘zbek' :
                   item.til === 'kk' ? 'Qaraqalpoq' :
@@ -164,11 +165,10 @@
             </div>
             <div class="collapsible-content" style="display: none;">
               <div class="info-table">
-                 <div class="info-table">
-              <div class="info-row">
-                <span class="info-label">Til:</span>
-                <span class="info-value">${item.til || 'Mavjud emas'}</span>
-              </div>
+                <div class="info-row">
+                  <span class="info-label">Til:</span>
+                  <span class="info-value">${item.til || 'Mavjud emas'}</span>
+                </div>
                 <div class="info-row">
                   <span class="info-label">Kontrakt ball:</span>
                   <span class="info-value">${item.contract_ball || 'Mavjud emas'}</span>
@@ -224,7 +224,7 @@
           <div class="collapsible-header" onclick="toggleCollapsible(this)">
             <span class="collapsible-title">${item.nomi}</span>
             <span class="language-toggle">
-              <button class="lang-btn">Kunduzgi</button>
+              <button class="lang-btn">${educationTypeDisplayNames[item.shakl.toLowerCase()] || item.shakl}</button>
               <button class="lang-btn">${
                 item.til === 'uz' ? 'O‘zbek' :
                 item.til === 'kk' ? 'Qaraqalpoq' :
@@ -239,7 +239,6 @@
                 <span class="info-label">Til:</span>
                 <span class="info-value">${item.til || 'Mavjud emas'}</span>
               </div>
-            <div class="info-table">
               <div class="info-row">
                 <span class="info-label">Kontrakt ball:</span>
                 <span class="info-value">${item.contract_ball || 'Mavjud emas'}</span>
